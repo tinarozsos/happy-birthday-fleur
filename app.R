@@ -4,7 +4,7 @@ library(later)
 library(sparkler)
 
 taskmaster_pairs <- read_csv("taskmaster_pairs.csv") |>
-  mutate(quote = str_wrap(quote, width = 36)) |>
+  mutate(quote = str_wrap(quote, width = 30)) |>
   select(quote, name)
 reward <- str_c(
   '<iframe src="',
@@ -153,7 +153,7 @@ ui <- fluidPage(
         background: linear-gradient(135deg, #fff3e0 0%, #ffd54f 60%, #982626 100%);
         color: #671717ff !important;
         border: 3px solid #ffd54f !important;
-        font-size: 1.3em;
+        font-size: 1.15em;
         font-weight: bold;
         text-shadow: 1px 1px 0 #fff3e0, 2px 2px 4px #ffd54f;
         box-shadow: 0 0 16px #ffd54f, 0 0 8px #fff3e0;
