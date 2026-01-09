@@ -3,8 +3,18 @@ library(tidyverse)
 library(later)
 library(sparkler)
 
-taskmaster_pairs <- read_csv("taskmaster_pairs.csv") |> mutate(quote = str_wrap(quote, width = 36))
-reward <- read_lines("reward.txt")
+taskmaster_pairs <- read_csv("taskmaster_pairs.csv") |>
+  mutate(quote = str_wrap(quote, width = 36)) |>
+  select(quote, name)
+reward <- str_c(
+  '<iframe src="',
+  {
+    read_lines("reward.txt") |>
+      str_remove("\\?img_index=\\d") |>
+      str_c("embed")
+  },
+  '"width="360" height="400" frameborder="0" scrolling="no"></iframe>'
+)
 
 description <- function() {
   str_c(
@@ -12,11 +22,11 @@ description <- function() {
 It's Fleur's birthday and she wants to share amazing Taskmaster quotes with everyone.
 Making a scheurkalender is a lot of work and Tina's handwriting is illegible, so she made a game of Shoe Who instead.<br><br>
 
-<b>Part I</b><br>
+<b>Task I</b><br>
 Do not get distracted by this image:
 ",
     sample(reward, 1),
-    "<br><b>Part II</b><br><br>
+    "<br><b>Task II</b><br><br>
 
 Match each Taskmaster quote with the name of the person who said it.
 Click on two cards: if they match, they stay revealed. If not, they hide again.
