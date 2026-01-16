@@ -28,11 +28,11 @@ Do not get distracted by this image:
     sample(reward, 1),
     "<br><b>Task II</b><br><br>
 
-Match each Taskmaster quote with the name of the person who said it.
+Match each Taskmaster quote with the name of the person who said it or is otherwise related to it (e.g. it was their nickname).
 Click on two cards: if they match, they stay revealed. If not, they hide again.
 Every game is different so keep coming back to play more.<br><br>
 
-Fastest wins.<br>
+Fastest wins.
 Your time starts now or when you click on 'I want to start again!'.<br>
 Bonus points for having the most fun while playing.
 "
@@ -223,7 +223,7 @@ ui <- fluidPage(
     tags$footer(
       style = "width: 100%; background: #fff3e0; color: #982626; text-align: center; padding: 18px 0 10px 0; font-family: 'Special Elite', 'Courier New', Courier, monospace; font-size: 1.1em; border-top: 2px solid #982626; margin-top: 32px; position: relative; z-index: 1;",
       HTML(
-        "Made with ♥︎ and R Shiny by <a href='https://tinarozsos.github.io/' style='color: #982626; text-decoration: underline;' target='_blank'>Tina</a>. If you see something weird, let her know and she will try to fix it. Data comes from the <a href='https://taskmaster.fandom.com/wiki/Taskmaster_Wiki' style='color: #982626; text-decoration: underline;' target='_blank'>Taskmaster Wiki</a>."
+        "Made with ♥︎ and R Shiny by <a href='https://tinarozsos.github.io/' style='color: #982626; text-decoration: underline;' target='_blank'>Tina</a>. If you see something weird, let her know and she will try to fix it."
       )
     )
   )
@@ -289,7 +289,7 @@ server <- function(input, output, session) {
   }
 
   # Timer UI
-  output$timer <- renderText({
+  elapsed_time <- reactive({
     states <- card_states()
     # Only update timer if game not won
     if (is.null(states) || !all(states == "matched")) {
@@ -298,7 +298,10 @@ server <- function(input, output, session) {
     elapsed <- as.numeric(difftime(Sys.time(), start_time(), units = "secs"))
     mins <- floor(elapsed / 60)
     secs <- floor(elapsed %% 60)
-    sprintf("Your time started %02d:%02d seconds ago", mins, secs)
+    sprintf("%02d:%02d", mins, secs)
+  })
+  output$timer <- renderText({
+    paste("Your time started", elapsed_time(), "ago")
   })
 
   # Observe new_game button
@@ -400,7 +403,9 @@ server <- function(input, output, session) {
         modalDialog(
           title = "You win!",
           HTML(str_c(
-            'Congratulations! As your reward, enjoy an out-of-context Taskmaster moment:<br><br>',
+            'Congratulations! You completed the game in ',
+            elapsed_time(),
+            ' seconds.<br>As your reward, enjoy an out-of-context Taskmaster moment:<br><br>',
             sample(reward, 1)
           )),
           footer = tagList(
